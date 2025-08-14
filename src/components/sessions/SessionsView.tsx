@@ -123,12 +123,12 @@ export const SessionsView: React.FC<SessionsViewProps> = ({ onOpenChat }) => {
             ? { 
                 ...session, 
                 status: 'confirmed' as const,
-                meeting_link: result.data.session.meeting_link || session.meeting_link,
-                meetingLink: result.data.session.meeting_link || session.meetingLink
+                meeting_link: result.data?.session?.meeting_link || session.meeting_link,
+                meetingLink: result.data?.session?.meeting_link || session.meetingLink
               }
             : session
         ));
-        console.log('Session confirmed successfully with meeting link:', result.data.session.meeting_link);
+        console.log('Session confirmed successfully with meeting link:', result.data?.session?.meeting_link);
       } else {
         setError(result.error || 'Failed to confirm session');
       }
@@ -295,7 +295,7 @@ export const SessionsView: React.FC<SessionsViewProps> = ({ onOpenChat }) => {
                               ) : (
                                 <CheckCircle className="h-4 w-4" />
                               )}
-                              <span>Confirm</span>
+                              <span>Confirm & Generate Link</span>
                             </button>
                             <button
                               onClick={() => handleDeclineSession(session.id)}
@@ -314,7 +314,7 @@ export const SessionsView: React.FC<SessionsViewProps> = ({ onOpenChat }) => {
                       } else {
                         return (
                           <div className="px-3 sm:px-4 py-2 bg-yellow-100 text-yellow-800 rounded-lg text-sm">
-                            Waiting for expert approval
+                            Waiting for {session.expert.name} to confirm
                           </div>
                         );
                       }
@@ -353,7 +353,7 @@ export const SessionsView: React.FC<SessionsViewProps> = ({ onOpenChat }) => {
                   <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-2 mb-1">
                     <h3 className="text-sm sm:text-base font-semibold text-gray-900 line-clamp-1">{session.title}</h3>
                     <span className="px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                      Pending Approval
+                      Session Request
                     </span>
                   </div>
                   <p className="text-xs sm:text-sm text-gray-600 mb-2 line-clamp-2">{session.description}</p>
@@ -361,7 +361,7 @@ export const SessionsView: React.FC<SessionsViewProps> = ({ onOpenChat }) => {
                   <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-4 text-xs sm:text-sm text-gray-500">
                     <div className="flex items-center space-x-1 flex-shrink-0">
                       <User className="h-4 w-4" />
-                      <span className="truncate">from {session.client.name}</span>
+                      <span className="truncate">Request from {session.client.name}</span>
                     </div>
                     <div className="flex items-center space-x-1 flex-shrink-0">
                       <Calendar className="h-4 w-4" />
@@ -371,6 +371,10 @@ export const SessionsView: React.FC<SessionsViewProps> = ({ onOpenChat }) => {
                     <div className="flex items-center space-x-1 flex-shrink-0">
                       <Clock className="h-4 w-4" />
                       <span>{formatTime(new Date(session.scheduledAt || session.scheduled_at))} ({session.duration}min)</span>
+                    </div>
+                    <div className="flex items-center space-x-1 flex-shrink-0">
+                      <DollarSign className="h-4 w-4" />
+                      <span>{session.price === 0 ? 'Free' : `$${session.price}`}</span>
                     </div>
                     <div className="flex items-center space-x-1 flex-shrink-0">
                       <DollarSign className="h-4 w-4" />
@@ -391,7 +395,7 @@ export const SessionsView: React.FC<SessionsViewProps> = ({ onOpenChat }) => {
                   ) : (
                     <CheckCircle className="h-4 w-4" />
                   )}
-                  <span>Confirm</span>
+                  <span>Accept & Generate Link</span>
                 </button>
                 <button
                   onClick={() => handleDeclineSession(session.id)}
@@ -472,8 +476,8 @@ export const SessionsView: React.FC<SessionsViewProps> = ({ onOpenChat }) => {
         {!loading && activeTab === 'requests' && sessionRequests.length === 0 && (
           <div className="text-center py-12">
             <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No Session Requests</h3>
-            <p className="text-gray-600">Session requests will appear here when you receive them.</p>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No Pending Requests</h3>
+            <p className="text-gray-600">Session requests from clients will appear here for your approval.</p>
           </div>
         )}
       </div>

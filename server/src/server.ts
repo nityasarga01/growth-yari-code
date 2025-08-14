@@ -110,7 +110,7 @@ app.get('/api/test', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/posts', postRoutes);
-app.use('/api/sessions', sessionRoutes);
+app.use('/api/sessions', require('./routes/sessions'));
 app.use('/api/connections', connectionRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/notifications', notificationRoutes);

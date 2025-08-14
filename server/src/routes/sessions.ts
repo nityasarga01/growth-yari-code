@@ -221,11 +221,11 @@ router.patch('/:id/status',
     };
 
     if (status === 'confirmed') {
-      // Generate a proper meeting room ID using timestamp and random string
-      const timestamp = Date.now().toString(36);
-      const randomStr = Math.random().toString(36).substring(2, 8);
-      const meetingId = `${timestamp}-${randomStr}-${id.substring(0, 6)}`;
-      updateData.meeting_link = `https://meet.google.com/${meetingId}`;
+      // Generate a valid Google Meet link format
+      const chars = 'abcdefghijklmnopqrstuvwxyz';
+      const randomString = () => Array.from({length: 3}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+      const meetingCode = `${randomString()}-${randomString()}-${randomString()}`;
+      updateData.meeting_link = `https://meet.google.com/${meetingCode}`;
       console.log('Generated meeting link for confirmed session:', updateData.meeting_link);
     }
 

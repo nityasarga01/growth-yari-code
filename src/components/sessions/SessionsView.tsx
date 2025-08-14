@@ -104,8 +104,9 @@ export const SessionsView: React.FC<SessionsViewProps> = ({ onOpenChat }) => {
   const pastSessions = sessions.filter(s => s.status === 'completed');
   const sessionRequests = sessions.filter(s => {
     const currentUserId = getCurrentUserId();
+    const isExpert = s.expertId === currentUserId || s.expert?.id === currentUserId;
     // Only show pending sessions to the expert who needs to approve them
-    return s.status === 'pending' && s.expert.id === currentUserId;
+    return s.status === 'pending' && isExpert;
   });
 
   const generateValidMeetingLink = (sessionId: string, sessionTitle: string) => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Plus, Calendar as CalendarIcon, Clock, User, Video, X, MapPin } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Calendar as CalendarIcon, Clock, User, Video, X, MapPin, CheckCircle, XCircle } from 'lucide-react';
 import { Session } from '../../types';
 import { apiClient } from '../../config/api';
 
@@ -374,10 +374,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ isOpen, onClose }) =
                       {eventsForDate.length > 3 && (
                         <div className="text-xs text-gray-600 px-1">
                           +{eventsForDate.length - 3} more
-                        <>
-                          <CheckCircle className="h-4 w-4" />
-                          <span>Confirm & Generate Link</span>
-                        </>
+                        </div>
                       )}
                     </div>
 
@@ -522,7 +519,10 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ isOpen, onClose }) =
                           {updatingSession === selectedEvent.id ? (
                             <div className="animate-spin rounded-full h-3 w-3 border-2 border-white border-t-transparent"></div>
                           ) : (
-                            <span>Confirm</span>
+                            <>
+                              <CheckCircle className="h-4 w-4" />
+                              <span>Confirm & Generate Link</span>
+                            </>
                           )}
                         </button>
                         <button 
@@ -533,7 +533,10 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ isOpen, onClose }) =
                           {updatingSession === selectedEvent.id ? (
                             <div className="animate-spin rounded-full h-3 w-3 border-2 border-white border-t-transparent"></div>
                           ) : (
-                            <span>Decline</span>
+                            <>
+                              <XCircle className="h-4 w-4" />
+                              <span>Decline</span>
+                            </>
                           )}
                         </button>
                       </div>
@@ -577,10 +580,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ isOpen, onClose }) =
                       <div className="flex items-start justify-between mb-2">
                         <h4 className="font-medium text-gray-900 text-sm">{event.title}</h4>
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusTextColor(event.status)}`}>
-                        <>
-                          <XCircle className="h-4 w-4" />
-                          <span>Decline</span>
-                        </>
+                          {event.status}
                         </span>
                       </div>
                       
@@ -605,18 +605,8 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ isOpen, onClose }) =
                   ))}
                   
                   {getEventsForDate(selectedDate).length === 0 && (
-                {selectedEvent.status === 'confirmed' && selectedEvent.meeting_link && (
-                  <a
-                    href={selectedEvent.meeting_link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-                  >
-                    <Video className="h-4 w-4" />
-                    <span>Join Meeting</span>
-                  </a>
-                )}
-                      </button>
+                    <div className="text-center py-8">
+                      <p className="text-gray-500 text-sm">No sessions scheduled for this day</p>
                     </div>
                   )}
                 </div>

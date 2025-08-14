@@ -511,34 +511,44 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ isOpen, onClose }) =
                     
                     {selectedEvent.status === 'pending' && (
                       <div className="flex space-x-2">
-                        <button 
-                          onClick={() => handleConfirmSession(selectedEvent.id)}
-                          disabled={updatingSession === selectedEvent.id}
-                          className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm disabled:opacity-50"
-                        >
-                          {updatingSession === selectedEvent.id ? (
-                            <div className="animate-spin rounded-full h-3 w-3 border-2 border-white border-t-transparent"></div>
-                          ) : (
-                            <>
-                              <CheckCircle className="h-4 w-4" />
-                              <span>Confirm & Generate Link</span>
-                            </>
-                          )}
-                        </button>
-                        <button 
-                          onClick={() => handleDeclineSession(selectedEvent.id)}
-                          disabled={updatingSession === selectedEvent.id}
-                          className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm disabled:opacity-50"
-                        >
-                          {updatingSession === selectedEvent.id ? (
-                            <div className="animate-spin rounded-full h-3 w-3 border-2 border-white border-t-transparent"></div>
-                          ) : (
-                            <>
-                              <XCircle className="h-4 w-4" />
-                              <span>Decline</span>
-                            </>
-                          )}
-                        </button>
+                        {selectedEvent.is_expert ? (
+                          <>
+                            <button 
+                              onClick={() => handleConfirmSession(selectedEvent.id)}
+                              disabled={updatingSession === selectedEvent.id}
+                              className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm disabled:opacity-50"
+                            >
+                              {updatingSession === selectedEvent.id ? (
+                                <div className="animate-spin rounded-full h-3 w-3 border-2 border-white border-t-transparent"></div>
+                              ) : (
+                                <>
+                                  <CheckCircle className="h-4 w-4" />
+                                  <span>Confirm & Generate Link</span>
+                                </>
+                              )}
+                            </button>
+                            <button 
+                              onClick={() => handleDeclineSession(selectedEvent.id)}
+                              disabled={updatingSession === selectedEvent.id}
+                              className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm disabled:opacity-50"
+                            >
+                              {updatingSession === selectedEvent.id ? (
+                                <div className="animate-spin rounded-full h-3 w-3 border-2 border-white border-t-transparent"></div>
+                              ) : (
+                                <>
+                                  <XCircle className="h-4 w-4" />
+                                  <span>Decline</span>
+                                </>
+                              )}
+                            </button>
+                          </>
+                        ) : (
+                          <div className="w-full p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                            <p className="text-yellow-700 text-sm text-center">
+                              Waiting for {selectedEvent.expert.name} to confirm this session
+                            </p>
+                          </div>
+                        )}
                       </div>
                     )}
                     

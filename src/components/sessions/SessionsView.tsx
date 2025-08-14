@@ -41,6 +41,22 @@ export const SessionsView: React.FC<SessionsViewProps> = ({ onOpenChat }) => {
     loadSessions();
   }, []);
 
+  // Get current user ID for role detection
+  const getCurrentUserId = () => {
+    return localStorage.getItem('current_user_id') || '';
+  };
+
+  // Check if current user is the expert for a session
+  const isCurrentUserExpert = (session: Session) => {
+    const currentUserId = getCurrentUserId();
+    return session.expert.id === currentUserId;
+  };
+
+  // Check if current user is the client for a session
+  const isCurrentUserClient = (session: Session) => {
+    const currentUserId = getCurrentUserId();
+    return session.client.id === currentUserId;
+  };
   const getStatusColor = (status: Session['status']) => {
     switch (status) {
       case 'confirmed':
@@ -73,13 +89,30 @@ export const SessionsView: React.FC<SessionsViewProps> = ({ onOpenChat }) => {
     });
   };
 
-  const upcomingSessions = sessions.filter(s => s.status === 'confirmed' || s.status === 'pending');
+  const upcomingSessions = sessions.filter(s => {
+    const currentUserId = getCurrentUserId();
+    // For upcoming sessions, show confirmed sessions for both users
+    // and pending sessions only for clients (who sent the request)
+    if (s.status === 'confirmed') {
+      return true; // Show confirmed sessions for both expert and client
+    }
+    if (s.status === 'pending') {
+      return s.client.id === currentUserId; // Only show pending sessions to the client who requested
+    }
+    return false;
+  });
   const pastSessions = sessions.filter(s => s.status === 'completed');
-  const sessionRequests = sessions.filter(s => s.status === 'pending');
+  const sessionRequests = sessions.filter(s => {
+    const currentUserId = getCurrentUserId();
+    // Only show pending sessions to the expert who needs to approve them
+    return s.status === 'pending' && s.expert.id === currentUserId;
+  });
 
   const generateValidMeetingLink = (sessionId: string, sessionTitle: string) => {
-    // Generate a valid Google Meet link format
-    const meetingId = sessionId.substring(0, 8) + '-' + sessionId.substring(8, 12) + '-' + sessionId.substring(12, 16);
+    // Generate a proper meeting room ID using timestamp and random string
+    const timestamp = Date.now().toString(36);
+    const randomStr = Math.random().toString(36).substring(2, 8);
+    const meetingId = `${timestamp}-${randomStr}-${sessionId.substring(0, 6)}`;
     return `https://meet.google.com/${meetingId}`;
   };
 
@@ -277,48 +310,10 @@ export const SessionsView: React.FC<SessionsViewProps> = ({ onOpenChat }) => {
                 )}
                 {session.status === 'pending' && (
                   <div className="flex items-center space-x-2">
-                    {/* Check if current user is the expert (can confirm/decline) */}
-                    {(() => {
-                      const currentUserId = localStorage.getItem('current_user_id');
-                      const isExpert = session.expert.id === currentUserId;
-                      
-                      if (isExpert) {
-                        return (
-                          <>
-                            <button
-                              onClick={() => handleConfirmSession(session.id)}
-                              disabled={updatingSession === session.id}
-                              className="flex items-center space-x-1 px-3 sm:px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm whitespace-nowrap disabled:opacity-50"
-                            >
-                              {updatingSession === session.id ? (
-                                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                              ) : (
-                                <CheckCircle className="h-4 w-4" />
-                              )}
-                              <span>Confirm & Generate Link</span>
-                            </button>
-                            <button
-                              onClick={() => handleDeclineSession(session.id)}
-                              disabled={updatingSession === session.id}
-                              className="flex items-center space-x-1 px-3 sm:px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm whitespace-nowrap disabled:opacity-50"
-                            >
-                              {updatingSession === session.id ? (
-                                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                              ) : (
-                                <XCircle className="h-4 w-4" />
-                              )}
-                              <span>Decline</span>
-                            </button>
-                          </>
-                        );
-                      } else {
-                        return (
-                          <div className="px-3 sm:px-4 py-2 bg-yellow-100 text-yellow-800 rounded-lg text-sm">
-                            Waiting for {session.expert.name} to confirm
-                          </div>
-                        );
-                      }
-                    })()}
+                    {/* Only clients see waiting message for their pending requests */}
+                    <div className="px-3 sm:px-4 py-2 bg-yellow-100 text-yellow-800 rounded-lg text-sm">
+                      Waiting for {session.expert.name} to confirm
+                    </div>
                   </div>
                 )}
                 <button 

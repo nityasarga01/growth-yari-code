@@ -231,9 +231,10 @@ router.patch('/:id/status', authenticateToken, async (req, res) => {
 
       // Generate Google Meet link when session is confirmed
       if (status === 'confirmed') {
-        const meetingId = session._id.toString().substring(0, 3) + '-' + 
-                         session._id.toString().substring(3, 7) + '-' + 
-                         session._id.toString().substring(7, 10);
+        // Generate a proper meeting room ID using timestamp and random string
+        const timestamp = Date.now().toString(36);
+        const randomStr = Math.random().toString(36).substring(2, 8);
+        const meetingId = `${timestamp}-${randomStr}-${session._id.toString().substring(0, 6)}`;
         session.meetingLink = `https://meet.google.com/${meetingId}`;
         console.log('Generated meeting link for confirmed session:', session.meetingLink);
       }

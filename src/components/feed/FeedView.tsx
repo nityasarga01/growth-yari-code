@@ -118,9 +118,9 @@ export const FeedView: React.FC<FeedViewProps> = ({ onBookSession }) => {
           </div>
           <button
             onClick={() => setShowCreatePost(true)}
-            className="flex items-center space-x-1 sm:space-x-2 px-3 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-brand-primary to-brand-secondary text-white rounded-xl sm:rounded-2xl hover:from-brand-primary/90 hover:to-brand-secondary/90 transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-105 text-sm sm:text-base flex-shrink-0 group"
+            className="flex items-center space-x-1 sm:space-x-2 px-3 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-brand-primary to-brand-secondary text-white rounded-lg sm:rounded-xl hover:from-brand-primary/90 hover:to-brand-secondary/90 transition-all shadow-lg hover:shadow-xl text-sm sm:text-base flex-shrink-0"
           >
-            <Plus className="h-5 w-5 group-hover:rotate-90 transition-transform duration-300" />
+            <Plus className="h-5 w-5" />
             <span className="hidden sm:inline">Create Post</span>
             <span className="sm:hidden">Post</span>
           </button>

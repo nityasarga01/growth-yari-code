@@ -65,16 +65,16 @@ export const DashboardView: React.FC = () => {
 
       {/* Stats Grid */}
       {stats && (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-8">
           {dashboardStatsConfig.map((config, index) => (
-            <div key={index} className="bg-white rounded-2xl sm:rounded-3xl shadow-lg p-4 sm:p-6 hover:shadow-2xl transition-all duration-300 hover:scale-105 border border-gray-100/50 group">
+            <div key={index} className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-3 sm:p-6 hover:shadow-xl transition-shadow">
               <div className="flex items-center justify-between mb-4">
-                <div className={`p-3 sm:p-4 rounded-2xl ${config.color} shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110`}>
-                  <config.icon className="h-5 sm:h-6 w-5 sm:w-6 text-white group-hover:animate-pulse" />
+                <div className={`p-2 sm:p-3 rounded-xl ${config.color}`}>
+                  <config.icon className="h-4 sm:h-6 w-4 sm:w-6 text-white" />
                 </div>
-                <span className="text-xs sm:text-sm font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">{config.change}</span>
+                <span className="text-xs sm:text-sm font-medium text-green-600">{config.change}</span>
               </div>
-              <h3 className="text-xl sm:text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-1">{stats[config.key] || '0'}</h3>
+              <h3 className="text-lg sm:text-2xl font-bold text-gray-900 mb-1">{stats[config.key] || '0'}</h3>
               <p className="text-xs sm:text-sm text-gray-600">{config.label}</p>
             </div>
           ))}
@@ -83,13 +83,13 @@ export const DashboardView: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
         {/* Recent Activity */}
-        <div className="bg-white rounded-2xl sm:rounded-3xl shadow-lg p-4 sm:p-6 hover:shadow-xl transition-all duration-300 border border-gray-100/50">
+        <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6">
           <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
           <div className="space-y-4">
             {activities.map((activity, index) => (
-              <div key={index} className="flex items-start space-x-3 p-3 rounded-xl hover:bg-gray-50 transition-all duration-300 group">
+              <div key={index} className="flex items-start space-x-3">
                 <div className="flex-shrink-0 mt-1">
-                  <div className={`w-3 h-3 rounded-full shadow-sm group-hover:animate-pulse ${
+                  <div className={`w-2 h-2 rounded-full ${
                     activity.type === 'session' ? 'bg-blue-500' :
                     activity.type === 'review' ? 'bg-yellow-500' :
                     activity.type === 'booking' ? 'bg-green-500' :
@@ -98,7 +98,7 @@ export const DashboardView: React.FC = () => {
                 </div>
                 <div className="flex-1">
                   <p className="text-xs sm:text-sm text-gray-900">{activity.message}</p>
-                  <p className="text-xs text-gray-500 mt-1 bg-gray-100 px-2 py-1 rounded-full inline-block">{activity.time}</p>
+                  <p className="text-xs text-gray-500 mt-1">{activity.time}</p>
                 </div>
               </div>
             ))}
@@ -110,11 +110,11 @@ export const DashboardView: React.FC = () => {
       </div>
 
       {/* Performance Chart Placeholder */}
-      <div className="mt-6 sm:mt-8 bg-white rounded-2xl sm:rounded-3xl shadow-lg p-4 sm:p-6 hover:shadow-xl transition-all duration-300 border border-gray-100/50">
+      <div className="mt-6 sm:mt-8 bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6">
         <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">Performance Overview</h3>
-        <div className="h-48 sm:h-64 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl flex items-center justify-center border border-gray-200/50">
+        <div className="h-48 sm:h-64 bg-gray-50 rounded-xl flex items-center justify-center">
           <div className="text-center">
-            <TrendingUp className="h-8 sm:h-12 w-8 sm:w-12 text-gray-400 mx-auto mb-4 animate-pulse" />
+            <TrendingUp className="h-8 sm:h-12 w-8 sm:w-12 text-gray-400 mx-auto mb-4" />
             <p className="text-sm sm:text-base text-gray-600">Performance charts will be displayed here</p>
           </div>
         </div>

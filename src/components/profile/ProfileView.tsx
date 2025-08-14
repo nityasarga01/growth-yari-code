@@ -131,50 +131,40 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ user: initialUser, onU
       )}
 
       {/* Profile Header */}
-      <div className="bg-white rounded-3xl shadow-xl overflow-hidden mb-8 border border-gray-100/50">
+      <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
         {/* Cover Photo */}
-        <div className="h-56 bg-gradient-to-br from-brand-primary via-brand-secondary to-brand-accent relative overflow-hidden">
-          <div className="absolute inset-0 bg-black bg-opacity-10" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-          <button className="absolute top-6 right-6 p-3 bg-white/20 backdrop-blur-sm rounded-xl hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg">
+        <div className="h-48 bg-gradient-to-r from-brand-primary to-brand-secondary relative">
+          <div className="absolute inset-0 bg-black bg-opacity-20" />
+          <button className="absolute top-4 right-4 p-2 bg-white bg-opacity-20 rounded-lg hover:bg-opacity-30 transition-colors">
             <Camera className="h-5 w-5 text-white" />
           </button>
         </div>
 
         {/* Profile Info */}
         <div className="relative px-8 pb-8">
-          <div className="flex items-start space-x-6 -mt-20">
+          <div className="flex items-start space-x-6 -mt-16">
             {/* Profile Picture */}
             <div className="relative">
               <img
                 src={user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=2d5016&color=fff&size=128`}
                 alt={user.name}
-                className="w-36 h-36 rounded-full border-4 border-white shadow-2xl hover:shadow-3xl transition-all duration-300"
+                className="w-32 h-32 rounded-full border-4 border-white shadow-lg"
               />
-              <button className="absolute bottom-3 right-3 p-3 bg-gradient-to-r from-brand-primary to-brand-secondary text-white rounded-full hover:from-brand-primary/90 hover:to-brand-secondary/90 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-110">
+              <button className="absolute bottom-2 right-2 p-2 bg-brand-primary text-white rounded-full hover:bg-brand-secondary transition-colors">
                 <Camera className="h-4 w-4" />
               </button>
             </div>
 
             {/* User Info */}
-            <div className="flex-1 pt-24">
+            <div className="flex-1 pt-20">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <div className="flex items-center space-x-3">
-                    <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">{user.name}</h1>
-                    {user.isVerified && (
-                      <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg">
-                        <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                    )}
-                  </div>
+                  <h1 className="text-2xl font-bold text-gray-900">{user.name}</h1>
                   <p className="text-gray-600">{user.profession || 'Professional'}</p>
                 </div>
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-brand-primary to-brand-secondary text-white rounded-xl hover:from-brand-primary/90 hover:to-brand-secondary/90 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
+                  className="flex items-center space-x-2 px-4 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-secondary transition-colors"
                 >
                   <Edit className="h-4 w-4" />
                   <span>Edit Profile</span>
@@ -182,7 +172,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ user: initialUser, onU
               </div>
               <button
                 onClick={() => setShowAvailability(true)}
-                className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl hover:from-green-700 hover:to-green-800 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 mb-6"
+                className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
               >
                 <Clock className="h-4 w-4" />
                 <span>Manage Availability</span>
@@ -190,7 +180,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ user: initialUser, onU
 
               <div className="flex items-center space-x-6 mb-4">
                 <div className="flex items-center space-x-2">
-                  <Star className="h-5 w-5 text-yellow-500 animate-pulse" />
+                  <Star className="h-5 w-5 text-yellow-500" />
                   <span className="font-medium">{user.rating || 0}</span>
                   <span className="text-gray-500">({user.reviewCount || 0} reviews)</span>
                 </div>
@@ -199,22 +189,22 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ user: initialUser, onU
                   <span className="text-gray-600">{stats?.sessions || 0} sessions completed</span>
                 </div>
                 {user.isVerified && (
-                  <div className="flex items-center space-x-2 bg-green-50 px-3 py-1 rounded-full">
-                    <Award className="h-4 w-4 text-green-500" />
-                    <span className="text-green-600 text-sm font-medium">Verified Expert</span>
+                  <div className="flex items-center space-x-2">
+                    <Award className="h-5 w-5 text-green-500" />
+                    <span className="text-green-600">Verified Expert</span>
                   </div>
                 )}
               </div>
 
-              <p className="text-gray-700 mb-6 leading-relaxed">{user.bio || 'No bio available yet.'}</p>
+              <p className="text-gray-600 mb-4">{user.bio || 'No bio available yet.'}</p>
 
               {/* Expertise Tags */}
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-2">
                 {user.expertise && user.expertise.length > 0 ? (
                   user.expertise.map((skill, index) => (
                     <span
                       key={index}
-                      className="px-4 py-2 bg-gradient-to-r from-brand-primary/10 to-brand-secondary/10 text-brand-primary rounded-full text-sm font-medium cursor-pointer hover:from-brand-primary/20 hover:to-brand-secondary/20 transition-all duration-300 shadow-sm hover:shadow-md hover:scale-105"
+                      className="px-3 py-1 bg-brand-primary/10 text-brand-primary rounded-full text-sm font-medium cursor-pointer hover:bg-brand-primary/20 transition-colors"
                     >
                       {skill}
                     </span>
@@ -270,40 +260,40 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ user: initialUser, onU
       {/* Stats Cards */}
       {stats && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-3xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 hover:scale-105 border border-gray-100/50 group">
+          <div className="bg-white rounded-2xl shadow-lg p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Total Sessions</h3>
-            <div className="text-4xl font-bold bg-gradient-to-r from-brand-primary to-brand-secondary bg-clip-text text-transparent mb-2 group-hover:animate-pulse">{stats.sessions || 0}</div>
+            <div className="text-3xl font-bold text-brand-primary mb-2">{stats.sessions || 0}</div>
             <p className="text-sm text-gray-600">Sessions completed</p>
           </div>
-          <div className="bg-white rounded-3xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 hover:scale-105 border border-gray-100/50 group">
+          <div className="bg-white rounded-2xl shadow-lg p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Connections</h3>
-            <div className="text-4xl font-bold bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent mb-2 group-hover:animate-pulse">{stats.connections || 0}</div>
+            <div className="text-3xl font-bold text-green-600 mb-2">{stats.connections || 0}</div>
             <p className="text-sm text-gray-600">Professional connections</p>
           </div>
-          <div className="bg-white rounded-3xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 hover:scale-105 border border-gray-100/50 group">
+          <div className="bg-white rounded-2xl shadow-lg p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Posts</h3>
-            <div className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-purple-700 bg-clip-text text-transparent mb-2 group-hover:animate-pulse">{stats.postsCount || 0}</div>
+            <div className="text-3xl font-bold text-purple-600 mb-2">{stats.postsCount || 0}</div>
             <p className="text-sm text-gray-600">Posts shared</p>
           </div>
         </div>
       )}
 
       {/* Recent Activity */}
-      <div className="bg-white rounded-3xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 border border-gray-100/50">
+      <div className="bg-white rounded-2xl shadow-lg p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
         <div className="space-y-4">
           {recentActivity && recentActivity.length > 0 ? (
             recentActivity.slice(0, 5).map((activity, index) => (
-              <div key={index} className="flex items-start space-x-3 p-4 bg-gradient-to-r from-gray-50 to-gray-100/50 rounded-2xl hover:from-gray-100 hover:to-gray-200/50 transition-all duration-300 group">
+              <div key={index} className="flex items-start space-x-3 p-4 bg-gray-50 rounded-xl">
                 <div className={`w-2 h-2 rounded-full mt-2 ${
                   activity.type === 'session' ? 'bg-blue-500' :
                   activity.type === 'review' ? 'bg-yellow-500' :
                   activity.type === 'booking' ? 'bg-green-500' :
                   'bg-purple-500'
-                } group-hover:animate-pulse`} />
+                }`} />
                 <div>
                   <p className="text-sm font-medium text-gray-900">{activity.message}</p>
-                  <p className="text-xs text-gray-500 bg-gray-200 px-2 py-1 rounded-full inline-block mt-1">{activity.time}</p>
+                  <p className="text-xs text-gray-500">{activity.time}</p>
                 </div>
               </div>
             ))

@@ -157,12 +157,12 @@ export const ConnectionsView: React.FC<ConnectionsViewProps> = ({
       </div>
 
       {/* Tabs */}
-      <div className="flex flex-col sm:flex-row space-y-1 sm:space-y-0 sm:space-x-1 mb-6 sm:mb-8 bg-gray-100/80 backdrop-blur-sm p-1 rounded-2xl shadow-lg">
+      <div className="flex flex-col sm:flex-row space-y-1 sm:space-y-0 sm:space-x-1 mb-6 sm:mb-8 bg-gray-100 p-1 rounded-lg">
         <button
           onClick={() => setActiveTab('connections')}
-          className={`px-3 sm:px-4 py-3 rounded-xl font-medium transition-all duration-300 text-sm sm:text-base hover:scale-105 ${
+          className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-sm sm:text-base ${
             activeTab === 'connections'
-              ? 'bg-white text-brand-primary shadow-lg'
+              ? 'bg-white text-brand-primary shadow-sm'
               : 'text-gray-600 hover:text-gray-900'
           }`}
         >
@@ -220,28 +220,19 @@ export const ConnectionsView: React.FC<ConnectionsViewProps> = ({
         {!loading && activeTab === 'connections' && (
           <>
             {connections.map((connection) => (
-              <div key={connection.id} className="bg-white rounded-2xl sm:rounded-3xl shadow-lg p-4 sm:p-6 hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] border border-gray-100/50 group">
+              <div key={connection.id} className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-3 sm:p-6 hover:shadow-xl transition-shadow">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
                   <div className="flex items-center space-x-3 sm:space-x-4 flex-1 min-w-0">
                     <img
                       src={connection.user.avatar || 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=1'}
                       alt={connection.user.name}
-                      className="w-14 sm:w-16 h-14 sm:h-16 rounded-full flex-shrink-0 ring-2 ring-brand-primary/20 group-hover:ring-brand-primary/40 transition-all duration-300"
+                      className="w-12 sm:w-16 h-12 sm:h-16 rounded-full flex-shrink-0"
                     />
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center space-x-2">
-                        <h3 className="text-base sm:text-lg font-bold text-gray-900 truncate">{connection.user.name}</h3>
-                        {connection.user.isVerified && (
-                          <div className="w-4 h-4 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
-                            <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                            </svg>
-                          </div>
-                        )}
-                      </div>
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 truncate">{connection.user.name}</h3>
                       <p className="text-sm sm:text-base text-gray-600 truncate">{connection.user.profession}</p>
                       <div className="flex items-center space-x-2 mt-1 flex-wrap">
-                        <span className="text-yellow-500 animate-pulse">★</span>
+                        <span className="text-yellow-500">★</span>
                         <span className="text-xs sm:text-sm font-medium">{connection.user.rating}</span>
                         <span className="text-xs sm:text-sm text-gray-500">({connection.user.reviewCount} reviews)</span>
                       </div>
@@ -253,7 +244,7 @@ export const ConnectionsView: React.FC<ConnectionsViewProps> = ({
                   <div className="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
                     <button
                       onClick={() => handleScheduleFreeCall(connection.user.id)}
-                      className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-4 py-2 bg-gradient-to-r from-green-100 to-green-200 text-green-700 rounded-xl hover:from-green-200 hover:to-green-300 transition-all duration-300 text-xs sm:text-sm shadow-sm hover:shadow-md hover:scale-105"
+                      className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors text-xs sm:text-sm"
                     >
                       <Calendar className="h-4 w-4" />
                       <span className="hidden sm:inline">Free Call</span>
@@ -261,7 +252,7 @@ export const ConnectionsView: React.FC<ConnectionsViewProps> = ({
                     </button>
                     <button
                       onClick={() => handleOpenChat(connection.user)}
-                      className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-4 py-2 bg-gradient-to-r from-indigo-100 to-purple-100 text-indigo-700 rounded-xl hover:from-indigo-200 hover:to-purple-200 transition-all duration-300 text-xs sm:text-sm shadow-sm hover:shadow-md hover:scale-105"
+                      className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-4 py-2 bg-indigo-100 text-indigo-700 rounded-lg hover:bg-indigo-200 transition-colors text-xs sm:text-sm"
                     >
                       <MessageCircle className="h-4 w-4" />
                       <span className="hidden sm:inline">Message</span>
@@ -269,7 +260,7 @@ export const ConnectionsView: React.FC<ConnectionsViewProps> = ({
                     </button>
                    <button
                      onClick={() => handleBookSession(connection.user.id)}
-                     className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-4 py-2 bg-gradient-to-r from-brand-primary to-brand-secondary text-white rounded-xl hover:from-brand-primary/90 hover:to-brand-secondary/90 transition-all duration-300 text-xs sm:text-sm shadow-md hover:shadow-lg hover:scale-105"
+                     className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-4 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-secondary transition-colors text-xs sm:text-sm"
                    >
                      <Video className="h-4 w-4" />
                      <span className="hidden sm:inline">Book Session</span>
@@ -277,12 +268,12 @@ export const ConnectionsView: React.FC<ConnectionsViewProps> = ({
                    </button>
                   </div>
                 </div>
-                <div className="mt-4 sm:mt-5">
+                <div className="mt-3 sm:mt-4">
                   <div className="flex flex-wrap gap-2">
                     {connection.user.expertise.map((skill, index) => (
                       <span
                         key={index}
-                        className="px-3 py-1 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 text-xs sm:text-sm rounded-full hover:from-gray-200 hover:to-gray-300 transition-all duration-300 cursor-pointer"
+                        className="px-2 py-1 bg-gray-100 text-gray-700 text-xs sm:text-sm rounded-full"
                       >
                         {skill}
                       </span>

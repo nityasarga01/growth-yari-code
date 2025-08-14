@@ -139,36 +139,45 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onLike, onBookSession 
   };
 
   return (
-    <div className="bg-white rounded-lg sm:rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow mx-1 sm:mx-0">
+    <div className="bg-white rounded-xl sm:rounded-3xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] mx-1 sm:mx-0 border border-gray-100/50">
       {/* Post Header */}
       <div className="p-3 sm:p-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 space-y-3 sm:space-y-0">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-3 sm:space-y-0">
           <div className="flex items-center space-x-3 flex-1 min-w-0">
             <img
               src={post.user.avatar || 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&dpr=1'}
               alt={post.user.name}
-              className="w-8 sm:w-10 h-8 sm:h-10 rounded-full flex-shrink-0"
+              className="w-10 sm:w-12 h-10 sm:h-12 rounded-full flex-shrink-0 ring-2 ring-brand-primary/20 hover:ring-brand-primary/40 transition-all duration-300"
             />
             <div className="min-w-0 flex-1">
-              <h3 className="text-sm sm:text-base font-semibold text-gray-900 truncate">{post.user.name}</h3>
+              <div className="flex items-center space-x-2">
+                <h3 className="text-sm sm:text-base font-semibold text-gray-900 truncate">{post.user.name}</h3>
+                {post.user.isVerified && (
+                  <div className="w-4 h-4 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+                    <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                )}
+              </div>
               <p className="text-xs sm:text-sm text-gray-600 truncate">{post.user.profession}</p>
             </div>
           </div>
           <div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
             <button
               onClick={handleConnect}
-              className="px-2 sm:px-3 py-1 bg-green-100 text-green-700 rounded-lg text-xs sm:text-sm font-medium hover:bg-green-200 transition-colors whitespace-nowrap"
+              className="px-2 sm:px-3 py-1 bg-gradient-to-r from-green-100 to-green-200 text-green-700 rounded-xl text-xs sm:text-sm font-medium hover:from-green-200 hover:to-green-300 transition-all duration-300 whitespace-nowrap shadow-sm hover:shadow-md hover:scale-105"
             >
               Connect
             </button>
             <button
               onClick={() => onBookSession(post.user.id)}
-              className="px-2 sm:px-3 py-1 bg-indigo-600 text-white rounded-lg text-xs sm:text-sm font-medium hover:bg-indigo-700 transition-colors whitespace-nowrap"
+              className="px-2 sm:px-3 py-1 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl text-xs sm:text-sm font-medium hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 whitespace-nowrap shadow-md hover:shadow-lg hover:scale-105"
             >
               <span className="hidden sm:inline">Book Session</span>
               <span className="sm:hidden">Book</span>
             </button>
-            <button className="p-1 sm:p-2 hover:bg-gray-100 rounded-lg transition-colors">
+            <button className="p-1 sm:p-2 hover:bg-gray-100 rounded-xl transition-all duration-300 hover:scale-110">
               <MoreHorizontal className="h-4 w-4 text-gray-500" />
             </button>
           </div>
@@ -176,9 +185,9 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onLike, onBookSession 
         
         {/* Post Content */}
         <div className="mb-4">
-          <p className="text-sm sm:text-base text-gray-800 leading-relaxed">{post.content}</p>
+          <p className="text-sm sm:text-base text-gray-800 leading-relaxed mb-3">{post.content}</p>
           {post.caption && (
-            <p className="text-sm text-gray-600 mt-2">{post.caption}</p>
+            <p className="text-sm text-gray-600 mt-2 italic">{post.caption}</p>
           )}
         </div>
 
@@ -190,7 +199,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onLike, onBookSession 
                 <img
                   src={post.mediaUrl || post.media_url}
                   alt="Post content"
-                  className="w-full rounded-lg max-h-96 object-cover cursor-pointer hover:opacity-95 transition-opacity"
+                  className="w-full rounded-2xl max-h-96 object-cover cursor-pointer hover:opacity-95 transition-all duration-300 shadow-md hover:shadow-xl"
                   onError={(e) => {
                     console.error('Image failed to load:', post.mediaUrl || post.media_url);
                     // Hide broken image and show placeholder
@@ -201,8 +210,8 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onLike, onBookSession 
                     window.open(post.mediaUrl || post.media_url, '_blank');
                   }}
                 />
-                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100">
-                  <span className="text-white text-sm bg-black bg-opacity-50 px-3 py-1 rounded-full">
+                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300 rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100">
+                  <span className="text-white text-sm bg-black bg-opacity-60 px-4 py-2 rounded-full backdrop-blur-sm">
                     Click to view full size
                   </span>
                 </div>
@@ -213,7 +222,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onLike, onBookSession 
                   src={post.mediaUrl || post.media_url}
                   poster={post.thumbnail}
                   controls
-                  className="w-full rounded-lg max-h-96 bg-gray-900"
+                  className="w-full rounded-2xl max-h-96 bg-gray-900 shadow-md hover:shadow-xl transition-shadow duration-300"
                   preload="metadata"
                   playsInline
                   muted
@@ -232,11 +241,11 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onLike, onBookSession 
         
         {/* Tags */}
         {post.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 sm:gap-2 mb-4">
+          <div className="flex flex-wrap gap-2 mb-6">
             {post.tags.map((tag, index) => (
               <span
                 key={index}
-                className="px-2 py-1 bg-indigo-100 text-indigo-700 text-xs rounded-full whitespace-nowrap"
+                className="px-3 py-1 bg-gradient-to-r from-indigo-100 to-purple-100 text-indigo-700 text-xs rounded-full whitespace-nowrap hover:from-indigo-200 hover:to-purple-200 transition-all duration-300 cursor-pointer"
               >
                 #{tag}
               </span>
@@ -245,22 +254,22 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onLike, onBookSession 
         )}
         
         {/* Post Actions */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pt-4 border-t border-gray-100 space-y-3 sm:space-y-0">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pt-4 border-t border-gray-200/50 space-y-3 sm:space-y-0">
           <div className="flex items-center space-x-4 sm:space-x-6">
             <button
               onClick={handleLike}
-              className={`flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm transition-colors ${
+              className={`flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm transition-all duration-300 hover:scale-110 ${
                 isLiked ? 'text-red-500' : 'text-gray-600 hover:text-red-500'
               }`}
             >
-              <Heart className={`h-4 sm:h-5 w-4 sm:w-5 ${isLiked ? 'fill-current' : ''}`} />
+              <Heart className={`h-4 sm:h-5 w-4 sm:w-5 ${isLiked ? 'fill-current animate-pulse' : ''}`} />
               <span>{post.likes + (isLiked ? 1 : 0)}</span>
             </button>
             
             <button
               onClick={loadComments}
               disabled={loadingComments}
-              className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-gray-600 hover:text-gray-900 transition-colors disabled:opacity-50"
+              className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-gray-600 hover:text-gray-900 transition-all duration-300 disabled:opacity-50 hover:scale-110"
             >
               <MessageCircle className="h-4 sm:h-5 w-4 sm:w-5" />
               <span>{loadingComments ? 'Loading...' : post.comments}</span>
@@ -268,7 +277,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onLike, onBookSession 
             
             <button
               onClick={handleShare}
-              className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-gray-600 hover:text-gray-900 transition-colors"
+              className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-gray-600 hover:text-gray-900 transition-all duration-300 hover:scale-110"
             >
               <Share className="h-4 sm:h-5 w-4 sm:w-5" />
               <span className="hidden sm:inline">Share</span>
@@ -276,7 +285,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onLike, onBookSession 
           </div>
           
           <div className="flex items-center space-x-2 text-xs sm:text-sm text-gray-500">
-            <span>{new Date(post.createdAt).toLocaleDateString()}</span>
+            <span className="bg-gray-100 px-2 py-1 rounded-full">{new Date(post.createdAt).toLocaleDateString()}</span>
           </div>
         </div>
       </div>

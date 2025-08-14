@@ -87,9 +87,10 @@ function App() {
   // Show loading screen while checking authentication
   if (loading && !isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100 flex items-center justify-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 to-brand-secondary/5"></div>
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-brand-primary border-t-transparent mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-brand-primary border-t-transparent mx-auto mb-6 shadow-lg"></div>
           <p className="text-gray-600">Loading...</p>
         </div>
       </div>
@@ -98,10 +99,13 @@ function App() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100 flex items-center justify-center p-4 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 to-brand-secondary/5"></div>
+        <div className="absolute top-10 left-10 w-20 h-20 bg-brand-primary/10 rounded-full blur-xl"></div>
+        <div className="absolute bottom-10 right-10 w-32 h-32 bg-brand-secondary/10 rounded-full blur-xl"></div>
         <div className="w-full max-w-md">
           {error && (
-            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <div className="mb-4 p-4 bg-red-50/90 backdrop-blur-sm border border-red-200 rounded-2xl shadow-lg">
               <p className="text-red-600 text-sm">{error}</p>
             </div>
           )}
@@ -124,7 +128,8 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 relative">
+      <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/3 to-brand-secondary/3"></div>
       <Header
         user={user!}
         onLogout={logout}

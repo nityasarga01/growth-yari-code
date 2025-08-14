@@ -120,6 +120,14 @@ export const SessionBooking: React.FC<SessionBookingProps> = ({ expert, onClose,
     }
   };
 
+  const generateValidMeetingLink = (sessionId: string, sessionTitle: string) => {
+    // Generate a proper meeting room ID using timestamp and random string
+    const timestamp = Date.now().toString(36);
+    const randomStr = Math.random().toString(36).substring(2, 8);
+    const meetingId = `${timestamp}-${randomStr}-${sessionId.substring(0, 6)}`;
+    return `https://meet.google.com/${meetingId}`;
+  };
+
   const handleBooking = async () => {
     if (!selectedSlot || !topic) {
       setError('Please select a time slot and provide a topic');

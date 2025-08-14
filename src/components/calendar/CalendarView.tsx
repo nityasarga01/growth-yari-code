@@ -169,7 +169,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ isOpen, onClose }) =
   const handleConfirmSession = async (sessionId: string) => {
     try {
       setUpdatingSession(sessionId);
-      console.log('Confirming session:', sessionId);
+      console.log('Calendar: Expert confirming session:', sessionId);
       
       const result = await apiClient.updateSessionStatus(sessionId, 'confirmed');
       if (result.success && result.data) {
@@ -193,7 +193,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ isOpen, onClose }) =
           } : null);
         }
         
-        console.log('Session confirmed successfully');
+        console.log('Calendar: Session confirmed successfully with meeting link:', result.data.session.meeting_link);
       } else {
         console.error('Failed to confirm session:', result.error);
         setError(result.error || 'Failed to confirm session');
@@ -209,7 +209,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ isOpen, onClose }) =
   const handleDeclineSession = async (sessionId: string) => {
     try {
       setUpdatingSession(sessionId);
-      console.log('Declining session:', sessionId);
+      console.log('Calendar: Expert declining session:', sessionId);
       
       const result = await apiClient.updateSessionStatus(sessionId, 'cancelled');
       if (result.success) {
@@ -228,7 +228,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ isOpen, onClose }) =
           } : null);
         }
         
-        console.log('Session declined successfully');
+        console.log('Calendar: Session declined successfully');
       } else {
         console.error('Failed to decline session:', result.error);
         setError(result.error || 'Failed to decline session');
@@ -374,7 +374,10 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ isOpen, onClose }) =
                       {eventsForDate.length > 3 && (
                         <div className="text-xs text-gray-600 px-1">
                           +{eventsForDate.length - 3} more
-                        </div>
+                        <>
+                          <CheckCircle className="h-4 w-4" />
+                          <span>Confirm & Generate Link</span>
+                        </>
                       )}
                     </div>
 
@@ -574,7 +577,10 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ isOpen, onClose }) =
                       <div className="flex items-start justify-between mb-2">
                         <h4 className="font-medium text-gray-900 text-sm">{event.title}</h4>
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusTextColor(event.status)}`}>
-                          {event.status}
+                        <>
+                          <XCircle className="h-4 w-4" />
+                          <span>Decline</span>
+                        </>
                         </span>
                       </div>
                       
@@ -599,11 +605,17 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ isOpen, onClose }) =
                   ))}
                   
                   {getEventsForDate(selectedDate).length === 0 && (
-                    <div className="text-center py-8">
-                      <CalendarIcon className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                      <p className="text-sm text-gray-600">No sessions scheduled</p>
-                      <button className="mt-2 text-indigo-600 hover:text-indigo-700 text-sm font-medium">
-                        Add availability
+                {selectedEvent.status === 'confirmed' && selectedEvent.meeting_link && (
+                  <a
+                    href={selectedEvent.meeting_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                  >
+                    <Video className="h-4 w-4" />
+                    <span>Join Meeting</span>
+                  </a>
+                )}
                       </button>
                     </div>
                   )}

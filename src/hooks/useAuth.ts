@@ -41,6 +41,8 @@ export const useAuth = () => {
       if (result.success && result.data) {
         apiClient.setToken(result.data.token);
         setUser(result.data.user);
+        // Store current user ID for session management
+        localStorage.setItem('current_user_id', result.data.user.id);
         console.log('Login successful:', result.data.user);
       } else {
         const errorMessage = result.error || 'Login failed';
@@ -80,6 +82,8 @@ export const useAuth = () => {
       if (result.success && result.data) {
         apiClient.setToken(result.data.token);
         setUser(result.data.user);
+        // Store current user ID for session management
+        localStorage.setItem('current_user_id', result.data.user.id);
         console.log('Signup successful:', result.data.user);
       } else {
         const errorMessage = result.error || 'Signup failed';
@@ -96,6 +100,7 @@ export const useAuth = () => {
 
   const logout = useCallback(() => {
     apiClient.clearToken();
+    localStorage.removeItem('current_user_id');
     setUser(null);
   }, []);
 

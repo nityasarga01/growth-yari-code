@@ -74,7 +74,8 @@ export const SessionsView: React.FC<SessionsViewProps> = ({ onOpenChat }) => {
   };
 
   const upcomingSessions = sessions.filter(s => s.status === 'confirmed' || s.status === 'pending');
-  const pastSessions = sessions.filter(s => s.status === 'completed' || s.status === 'cancelled');
+  const pastSessions = sessions.filter(s => s.status === 'completed');
+  const sessionRequests = sessions.filter(s => s.status === 'pending');
 
   const generateValidMeetingLink = (sessionId: string, sessionTitle: string) => {
     // Generate a valid Google Meet link format
@@ -96,7 +97,10 @@ export const SessionsView: React.FC<SessionsViewProps> = ({ onOpenChat }) => {
 
   const handleMessage = (session: Session) => {
     // Determine who to message (the other participant)
-    const otherUser = session.expert.id === session.client.id ? session.client : session.expert;
+    const isExpert = session.expert.id === session.client.id; // This logic seems wrong, let me fix it
+    // Get current user ID from session storage or context
+    const currentUserId = localStorage.getItem('current_user_id') || 'unknown';
+    const otherUser = session.expert.id === currentUserId ? session.client : session.expert;
     if (onOpenChat) {
       onOpenChat(otherUser);
     }
@@ -110,6 +114,7 @@ export const SessionsView: React.FC<SessionsViewProps> = ({ onOpenChat }) => {
   const handleConfirmSession = async (sessionId: string) => {
     try {
       setUpdatingSession(sessionId);
+      console.log('Expert confirming session:', sessionId);
       const result = await apiClient.updateSessionStatus(sessionId, 'confirmed');
       if (result.success) {
         // Update the session in the local state
@@ -123,7 +128,7 @@ export const SessionsView: React.FC<SessionsViewProps> = ({ onOpenChat }) => {
               }
             : session
         ));
-        console.log('Session confirmed successfully with meeting link');
+        console.log('Session confirmed successfully with meeting link:', result.data.session.meeting_link);
       } else {
         setError(result.error || 'Failed to confirm session');
       }
@@ -138,11 +143,16 @@ export const SessionsView: React.FC<SessionsViewProps> = ({ onOpenChat }) => {
   const handleDeclineSession = async (sessionId: string) => {
     try {
       setUpdatingSession(sessionId);
+      console.log('Expert declining session:', sessionId);
       const result = await apiClient.updateSessionStatus(sessionId, 'cancelled');
       if (result.success) {
-        // Remove cancelled session from upcoming list or move to past
-        setSessions(prev => prev.filter(session => session.id !== sessionId));
-        console.log('Session declined and removed from list');
+        // Update session status to cancelled
+        setSessions(prev => prev.map(session => 
+          session.id === sessionId 
+            ? { ...session, status: 'cancelled' as const }
+            : session
+        ));
+        console.log('Session declined successfully');
       } else {
         setError(result.error || 'Failed to decline session');
       }
@@ -193,8 +203,8 @@ export const SessionsView: React.FC<SessionsViewProps> = ({ onOpenChat }) => {
               : 'text-gray-600 hover:text-gray-900'
           }`}
         >
-          <span className="sm:hidden">Requests (0)</span>
-          <span className="hidden sm:inline">Requests (0)</span>
+          <span className="sm:hidden">Requests ({sessionRequests.length})</span>
+          <span className="hidden sm:inline">Requests ({sessionRequests.length})</span>
         </button>
       </div>
 
@@ -267,30 +277,48 @@ export const SessionsView: React.FC<SessionsViewProps> = ({ onOpenChat }) => {
                 )}
                 {session.status === 'pending' && (
                   <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => handleConfirmSession(session.id)}
-                      disabled={updatingSession === session.id}
-                      className="flex items-center space-x-1 px-3 sm:px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm whitespace-nowrap disabled:opacity-50"
-                    >
-                      {updatingSession === session.id ? (
-                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                      ) : (
-                      <CheckCircle className="h-4 w-4" />
-                      )}
-                      <span>Confirm</span>
-                    </button>
-                    <button
-                      onClick={() => handleDeclineSession(session.id)}
-                      disabled={updatingSession === session.id}
-                      className="flex items-center space-x-1 px-3 sm:px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm whitespace-nowrap disabled:opacity-50"
-                    >
-                      {updatingSession === session.id ? (
-                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                      ) : (
-                      <XCircle className="h-4 w-4" />
-                      )}
-                      <span>Decline</span>
-                    </button>
+                    {/* Check if current user is the expert (can confirm/decline) */}
+                    {(() => {
+                      const currentUserId = localStorage.getItem('current_user_id');
+                      const isExpert = session.expert.id === currentUserId;
+                      
+                      if (isExpert) {
+                        return (
+                          <>
+                            <button
+                              onClick={() => handleConfirmSession(session.id)}
+                              disabled={updatingSession === session.id}
+                              className="flex items-center space-x-1 px-3 sm:px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm whitespace-nowrap disabled:opacity-50"
+                            >
+                              {updatingSession === session.id ? (
+                                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                              ) : (
+                                <CheckCircle className="h-4 w-4" />
+                              )}
+                              <span>Confirm</span>
+                            </button>
+                            <button
+                              onClick={() => handleDeclineSession(session.id)}
+                              disabled={updatingSession === session.id}
+                              className="flex items-center space-x-1 px-3 sm:px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm whitespace-nowrap disabled:opacity-50"
+                            >
+                              {updatingSession === session.id ? (
+                                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                              ) : (
+                                <XCircle className="h-4 w-4" />
+                              )}
+                              <span>Decline</span>
+                            </button>
+                          </>
+                        );
+                      } else {
+                        return (
+                          <div className="px-3 sm:px-4 py-2 bg-yellow-100 text-yellow-800 rounded-lg text-sm">
+                            Waiting for expert approval
+                          </div>
+                        );
+                      }
+                    })()}
                   </div>
                 )}
                 <button 
@@ -312,6 +340,82 @@ export const SessionsView: React.FC<SessionsViewProps> = ({ onOpenChat }) => {
           </div>
         ))}
 
+        {!loading && activeTab === 'requests' && sessionRequests.map((session) => (
+          <div key={session.id} className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-3 sm:p-6 hover:shadow-xl transition-shadow border-l-4 border-yellow-500">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between space-y-3 sm:space-y-0">
+              <div className="flex items-start space-x-3 sm:space-x-4 flex-1">
+                <img
+                  src={session.client.avatar || 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=1'}
+                  alt={session.client.name}
+                  className="w-10 sm:w-12 h-10 sm:h-12 rounded-full flex-shrink-0"
+                />
+                <div className="flex-1">
+                  <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-2 mb-1">
+                    <h3 className="text-sm sm:text-base font-semibold text-gray-900 line-clamp-1">{session.title}</h3>
+                    <span className="px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                      Pending Approval
+                    </span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-gray-600 mb-2 line-clamp-2">{session.description}</p>
+                  
+                  <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-4 text-xs sm:text-sm text-gray-500">
+                    <div className="flex items-center space-x-1 flex-shrink-0">
+                      <User className="h-4 w-4" />
+                      <span className="truncate">from {session.client.name}</span>
+                    </div>
+                    <div className="flex items-center space-x-1 flex-shrink-0">
+                      <Calendar className="h-4 w-4" />
+                      <span className="hidden sm:inline">{formatDate(new Date(session.scheduledAt || session.scheduled_at))}</span>
+                      <span className="sm:hidden">{new Date(session.scheduledAt || session.scheduled_at).toLocaleDateString()}</span>
+                    </div>
+                    <div className="flex items-center space-x-1 flex-shrink-0">
+                      <Clock className="h-4 w-4" />
+                      <span>{formatTime(new Date(session.scheduledAt || session.scheduled_at))} ({session.duration}min)</span>
+                    </div>
+                    <div className="flex items-center space-x-1 flex-shrink-0">
+                      <DollarSign className="h-4 w-4" />
+                      <span>{session.price === 0 ? 'Free' : `$${session.price}`}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex flex-row sm:flex-col lg:flex-row items-center space-x-2 sm:space-x-0 sm:space-y-2 lg:space-y-0 lg:space-x-2 flex-shrink-0">
+                <button
+                  onClick={() => handleConfirmSession(session.id)}
+                  disabled={updatingSession === session.id}
+                  className="flex items-center space-x-1 px-3 sm:px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm whitespace-nowrap disabled:opacity-50"
+                >
+                  {updatingSession === session.id ? (
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                  ) : (
+                    <CheckCircle className="h-4 w-4" />
+                  )}
+                  <span>Confirm</span>
+                </button>
+                <button
+                  onClick={() => handleDeclineSession(session.id)}
+                  disabled={updatingSession === session.id}
+                  className="flex items-center space-x-1 px-3 sm:px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm whitespace-nowrap disabled:opacity-50"
+                >
+                  {updatingSession === session.id ? (
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                  ) : (
+                    <XCircle className="h-4 w-4" />
+                  )}
+                  <span>Decline</span>
+                </button>
+                <button 
+                  onClick={() => handleMessage(session)}
+                  className="flex items-center space-x-1 px-3 sm:px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors text-sm whitespace-nowrap"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  <span>Message</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
         {!loading && activeTab === 'past' && pastSessions.map((session) => (
           <div key={session.id} className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-3 sm:p-6 hover:shadow-xl transition-shadow">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between space-y-3 sm:space-y-0">
@@ -365,7 +469,7 @@ export const SessionsView: React.FC<SessionsViewProps> = ({ onOpenChat }) => {
           </div>
         ))}
 
-        {!loading && activeTab === 'requests' && (
+        {!loading && activeTab === 'requests' && sessionRequests.length === 0 && (
           <div className="text-center py-12">
             <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">No Session Requests</h3>

@@ -115,6 +115,15 @@ router.post('/book',
     // TODO: Send notification to expert
     // TODO: If paid session, create payment intent
 
+    // Create notification for the expert about new session request
+    await createNotification(
+      expert_id,
+      'session_request',
+      'New Session Request',
+      `${req.user!.email} has requested a session: ${title}`,
+      req.user!.id,
+      { sessionId: sessionId }
+    );
     res.status(201).json({
       success: true,
       data: { session }
@@ -211,10 +220,11 @@ router.patch('/:id/status',
       updated_at: new Date().toISOString()
     };
 
-    if (status === 'confirmed' && !session.meeting_link) {
+    if (status === 'confirmed') {
       // Generate a valid Google Meet link format
       const meetingId = id.substring(0, 3) + '-' + id.substring(3, 7) + '-' + id.substring(7, 10);
       updateData.meeting_link = `https://meet.google.com/${meetingId}`;
+      console.log('Generated meeting link for confirmed session:', updateData.meeting_link);
     }
 
     const { data: updatedSession, error } = await supabaseAdmin
@@ -239,13 +249,24 @@ router.patch('/:id/status',
     // Send notification to the other participant when status changes
     const otherUserId = isExpert ? session.client_id : session.expert_id;
     if (status === 'confirmed') {
+      console.log('Sending confirmation notification to:', otherUserId);
       await createNotification(
         otherUserId,
         'session_confirmed',
         'Session Confirmed',
-        `Your session has been confirmed. Meeting link: ${updateData.meeting_link}`,
+        `Your session "${updatedSession.title}" has been confirmed and is ready to join.`,
         req.user!.id,
         { sessionId: id, meetingLink: updateData.meeting_link }
+      );
+    } else if (status === 'cancelled') {
+      console.log('Sending cancellation notification to:', otherUserId);
+      await createNotification(
+        otherUserId,
+        'session_cancelled',
+        'Session Cancelled',
+        `Your session "${updatedSession.title}" has been cancelled by the expert.`,
+        req.user!.id,
+        { sessionId: id }
       );
     }
 

@@ -115,7 +115,12 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({ isOpen, 
       case 'connection_request':
         return '👥';
       case 'session_booked':
+      case 'session_request':
         return '📅';
+      case 'session_confirmed':
+        return '✅';
+      case 'session_cancelled':
+        return '❌';
       case 'session_reminder':
         return '⏰';
       case 'payment_received':

@@ -8,6 +8,7 @@
     "dev:admin": "vite --mode admin",
     "build": "vite build",
     "build:admin": "vite build --mode admin",
+    "build:azure": "vite build --mode production",
     "lint": "eslint .",
     "preview": "vite preview"
   },

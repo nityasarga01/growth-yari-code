@@ -1,0 +1,54 @@
+{
+  "deployment": {
+    "type": "azure",
+    "frontend": {
+      "service": "Azure Static Web Apps",
+      "runtime": "Node.js 18",
+      "buildCommand": "npm run build",
+      "outputDirectory": "dist",
+      "environmentVariables": {
+        "VITE_API_URL": "https://growthyari-backend.azurewebsites.net/api",
+        "VITE_SUPABASE_URL": "your_supabase_url",
+        "VITE_SUPABASE_ANON_KEY": "your_supabase_anon_key"
+      }
+    },
+    "backend": {
+      "service": "Azure App Service",
+      "runtime": "Node.js 18",
+      "startupCommand": "node src/server.js",
+      "environmentVariables": {
+        "NODE_ENV": "production",
+        "PORT": "8080",
+        "SUPABASE_URL": "your_supabase_url",
+        "SUPABASE_SERVICE_ROLE_KEY": "your_supabase_service_role_key",
+        "JWT_SECRET": "your_production_jwt_secret",
+        "FRONTEND_URL": "https://growthyari-frontend.azurestaticapps.net"
+      }
+    },
+    "database": {
+      "option1": "Supabase (Recommended)",
+      "option2": "Azure Database for PostgreSQL"
+    }
+  },
+  "resources": {
+    "resourceGroup": "growthyari-rg",
+    "location": "East US",
+    "staticWebApp": "growthyari-frontend",
+    "appService": "growthyari-backend",
+    "appServicePlan": "growthyari-plan"
+  },
+  "pricing": {
+    "development": {
+      "staticWebApps": "Free",
+      "appService": "$13/month (B1)",
+      "supabase": "Free",
+      "total": "$13/month"
+    },
+    "production": {
+      "staticWebApps": "$9/month",
+      "appService": "$73/month (P1V2)",
+      "database": "$20/month",
+      "total": "$102/month"
+    }
+  }
+}
